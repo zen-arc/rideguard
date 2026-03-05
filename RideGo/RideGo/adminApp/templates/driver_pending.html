@@ -1,0 +1,52 @@
+{% extends "admin_nav.html" %}
+{% block content %}
+<br><br>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Pending Driver</h2>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>                    
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th>Police Clearence Certificate</th>
+                    <th>Aadhar</th>
+                    <th>license</th>
+                    <th>Phone Country Code</th>
+                    <th>Phone Number</th>
+                    <th>status</th>
+                    <th colspan="2">Actions</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in com %}
+                    <tr>
+                        
+                        <td>{{ i.name }}</td>
+                        <td><img src="{{ i.image.url }}" alt="Category Image" width="100"></td>                  
+                        <td><a href="{{ i.pcc.url }}" target="_blank">View PCC</a></td>
+                        <td><a href="{{ i.aadhar.url }}" target="_blank">View Aadhar</a></td>
+                        <td><a href="{{ i.license.url }}" target="_blank">View License</a></td>
+                        <td>{{ i.phone_country_code }}</td>
+                        <td>{{ i.phone_number }}</td>
+                        <td>{{i.status}}</td>
+
+
+                    
+
+                        <td><a href="{% url 'approve_driver' i.id %}" class="btn btn-warning">Approve</a></td>  
+                        <td><a href="{% url 'reject_driver' i.id %}" class="btn btn-danger">Reject</a></td>  
+
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">No registrations found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock  %}

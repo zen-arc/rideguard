@@ -1,0 +1,159 @@
+{% extends "driver_nav.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addVehicleModal">Add Vehicle</button>
+    </div>
+
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Reg.No</th>                
+                <th>Category</th>                
+                <th>Fuel Type</th>                
+                <th>Model</th> 
+                <th>No of Seats</th>                
+                <th>Driver</th>  
+                <th>Price / KM </th>              
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in vehicle %}
+            <tr>
+                <td>{{ v.name }}</td>
+                <td><img src="{{ v.image.url }}" alt="Vehicle Image" width="100" class="img-thumbnail"></td>
+                <td>{{ v.regno }}</td>
+                <td>{{ v.category }}</td>
+                <td>{{ v.fuel_type }}</td>
+                <td>{{ v.model }}</td>
+                <td>{{ v.no_of_seats }}</td>
+                <td>{{ v.driverid }}</td>
+                <td>{{ v.price_per_km }}</td>
+                  
+                <td>
+                    <!-- Edit Button to Open Modal -->
+                    <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editVehicleModal{{ v.id }}">Edit</button>
+                    
+                    <!-- Delete Button -->
+                    <a href="{% url 'del_vehicle' v.id %}" class="btn btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+
+            <!-- Edit Vehicle Modal (One for each vehicle) -->
+            <div class="modal fade" id="editVehicleModal{{ v.id }}" tabindex="-1" aria-labelledby="editVehicleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Vehicle</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="{% url 'edit_vehicle' v.id %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" name="name" id="name" class="form-control" value="{{ v.name }}" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="regno" class="form-label">Reg.No</label>
+                                    <input type="text" name="regno" id="regno" class="form-control" value="{{ v.regno }}" required>
+                                </div>
+
+                                
+                                <div class="mb-3">
+                                <label for="category">Category</label>
+                                <select name="category" id="category" class="form-control">
+                                    {% for category in cat %}                                    
+                                    <option value="{{ category.id }}" {% if category.id == i.category.id %}selected{% endif %}>{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                </div>
+
+
+                                <div class="mb-3">
+                                    <div class="mb-3">
+                                        <label for="fuel_type" class="form-label">Fuel Type</label>
+                                        <select name="fuel_type" id="fuel_type" class="form-control">
+                                            <option value="Petrol" {% if v.fuel_type == "Petrol" %}selected{% endif %}>Petrol</option>
+                                            <option value="Diesel" {% if v.fuel_type == "Diesel" %}selected{% endif %}>Diesel</option>
+                                            <option value="Electric" {% if v.fuel_type == "Electric" %}selected{% endif %}>Electric</option>
+                                            <option value="Hybrid" {% if v.fuel_type == "Hybrid" %}selected{% endif %}>Hybrid</option>
+                                            <option value="CNG" {% if v.fuel_type == "CNG" %}selected{% endif %}>CNG</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="model" class="form-label">Model</label>
+                                    <input type="text" name="model" id="model" class="form-control" value="{{ v.model }}" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="no_of_seats" class="form-label">No of Seats</label>
+                                    <input type="number" name="no_of_seats" id="no_of_seats" class="form-control" value="{{ v.no_of_seats }}" required>
+                                </div>
+
+
+                                <div class="mb-3">
+                                    <label for="driverid">Driver</label>
+                                        <input type="text" name="driverid" id="driverid" class="form-control" value="{{ dr.name }}" required readonly>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="price_per_km" class="form-label ">Price / KM</label>
+                                    <input type="number" name="price_per_km" id="price_per_km" class="form-control" value="{{ v.price_per_km }}" required>
+                                </div>
+
+
+                                <div class="mb-3">
+                                    <label for="image" class="form-label">Image</label>
+                                    <input type="file" name="image" id="image" class="form-control">
+                                    <img src="{{ v.image.url }}" alt="Current Image" class="mt-2 img-thumbnail" width="100">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center">No Vehicle found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Vehicle Modal -->
+<div class="modal fade" id="addVehicleModal" tabindex="-1" aria-labelledby="addVehicleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Vehicle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'add_vehicle' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Add Vehicle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+
+{% endblock %}

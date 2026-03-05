@@ -1,0 +1,139 @@
+{% extends "user_nav.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Driver Profile Section -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Driver Information -->
+        <div class="col-lg-4">
+            <div class="card shadow-lg driver-card">
+                <div class="card-body text-center">
+                    <img src="{{ driver.image.url }}" class="img-fluid rounded-circle driver-img mb-3" alt="{{ driver.name }}">
+                    <h2 class="text-dark">{{ driver.name }}</h2>
+                    <hr>
+                    <h5 class="text-primary">Contact Details</h5>
+                    <p><i class="fa fa-envelope text-primary me-2"></i> {{ driver.loginid.email }}</p>
+                    <p><i class="fa fa-globe text-primary me-2"></i> Country: {{ driver.country }}</p>
+                    <p><i class="fa fa-phone text-primary me-2"></i> Phone: {{ driver.phone_number }}</p>
+                    <hr>
+                    <h5 class="text-primary">Documents</h5>
+                    <p><i class="fa fa-file-alt text-primary me-2"></i> <a href="{{ driver.pcc.url }}" target="_blank" class="text-success">PCC Document</a></p>
+                    <p><i class="fa fa-id-badge text-primary me-2"></i> <a href="{{ driver.aadhar.url }}" target="_blank" class="text-success">Aadhar Card</a></p>
+                    <p><i class="fa fa-id-card text-primary me-2"></i> <a href="{{ driver.license.url }}" target="_blank" class="text-success">Driving License</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assigned Vehicles Section -->
+        <div class="col-lg-8">
+            <h3 class="mb-4 text-dark">Vehicles</h3>
+            <div class="row g-4">
+                {% for car in vehicles %}
+                <div class="col-md-6">
+                    <div class="card vehicle-card shadow border-0">
+                        <div class="vehicle-img">
+                            <img src="{{ car.image.url }}" class="vehicle-fixed-img" alt="{{ car.name }}">
+                        </div>
+                        <div class="card-body text-center p-3">
+                            <h4 class="mb-2">{{ car.name }}</h4>
+                            <ul class="features list-unstyled mb-3">
+                                <li><i class="fa fa-users"></i> {{ car.no_of_seats }} Seats</li>
+                                <li><i class="fa fa-gas-pump"></i> {{ car.fuel_type }}</li>
+                                <li><i class="fa fa-car"></i> Model: {{ car.model }}</li>
+                            </ul>
+                            <a href="{% url 'vehicle_detail' car.pk %}" class="btn btn-primary rounded-pill py-2 px-4">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">This driver no vehicles.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styling -->
+<style>
+    /* Driver Profile Card */
+    .driver-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    /* Fix Driver Image Alignment */
+    .driver-img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #007bff;
+        padding: 5px;
+        display: block;
+        margin: 0 auto; /* Ensures centering */
+    }
+
+    /* Vehicle Card */
+    .vehicle-card {
+        border-radius: 10px;
+        overflow: hidden;
+        height: 100%; /* Ensure all cards have the same height */
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    /* Vehicle Image Container */
+    .vehicle-img {
+        height: 200px; /* Adjust as needed */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color:rgb(255, 255, 255); /* Optional background to handle empty spaces */
+    }
+
+    /* Vehicle Image */
+    .vehicle-fixed-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* Ensures the whole image fits without cropping */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    /* Card Body */
+    .card-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .vehicle-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .features li {
+        font-size: 14px;
+        color: #555;
+        display: inline-block;
+        margin-right: 15px;
+    }
+
+    .features i {
+        color: #ff5733;
+        margin-right: 5px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .text-center {
+            text-align: center;
+        }
+    }
+</style>
+
+{% endblock %}

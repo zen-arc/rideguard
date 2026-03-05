@@ -1,0 +1,58 @@
+{% extends "admin_nav.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block content %}
+<div class="dashboard-container">
+    <h2 class="dashboard-title">Welcome to the Admin Dashboard</h2>
+    
+    <div class="dashboard-welcome">
+        <p class="greeting">Hello, Admin👋</p>
+        <p class="description">
+            Here you can manage <strong>Drivers</strong>, <strong>Categories</strong>, view <strong>reviews</strong>, and oversee <strong>customer interactions</strong>.
+        </p>
+        <p class="description">Stay updated with the latest data and ensure smooth operations.</p>
+    </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+    .dashboard-container {
+        background: linear-gradient(to right, #f8f9fa, #e9ecef); /* Soft gradient */
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .dashboard-title {
+        color: #343a40;
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-welcome {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: inline-block;
+        max-width: 600px;
+    }
+
+    .greeting {
+        font-size: 22px;
+        font-weight: bold;
+        color: #e85a50;
+    }
+
+    .description {
+        font-size: 16px;
+        color: #555;
+    }
+</style>
+<br><br><br><br><br><br><br><br><br>
+{% endblock %}

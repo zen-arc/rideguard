@@ -1,0 +1,237 @@
+{% extends "driver_nav.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Update Bookings Status</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Vehicle Name</th>
+                <th>Booked At</th>
+                <th>From Location</th>
+                <th>Destination Location</th>
+                <th>Travel Date</th>
+                <th>Travel Time</th>
+                <th>Total Price</th>
+                <th>Payment Status</th>
+                <th>Status</th>
+                <th>Update Status</th>
+                <th>Monitor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in booking %}
+                <tr>
+                    <td>{{ i.userid.name }}</td>
+                    <td>{{ i.userid.phone_number }}</td>
+                    <td>{{ i.userid.login.email }}</td>
+                    <td>{{ i.vehicleid.name }}</td>
+                    <td>{{ i.created_at }}</td>
+                    <td>{{ i.from_location }}</td>
+                    <td>{{ i.destination_location }}</td>
+                    <td>{{ i.travel_date }}</td>
+                    <td>{{ i.travel_time }}</td>
+                    <td>{{ i.total_price }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if i.payment_status == 'unpaid' %} bg-warning text-dark 
+                            {% elif i.payment_status == 'paid' %} bg-success 
+                            {% elif i.payment_status == 'failed' %} bg-danger 
+                            {% else %} bg-secondary {% endif %}">
+                            {{ i.payment_status }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge 
+                            {% if i.status == 'pending' %} bg-warning text-dark 
+                            {% elif i.status == 'available' %} bg-primary 
+                            {% elif i.status == 'completed' %} bg-success 
+                            {% elif i.status == 'not available' %} bg-danger 
+                            {% else %} bg-secondary {% endif %}">
+                            {{ i.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if i.status == "cancelled" %}
+                            <button class="btn btn-secondary" disabled>cancelled</button>
+                        {% else %}
+                        <form method="POST" action="{% url 'update_order_status' i.id %}">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <select name="status" class="form-select" style="min-width: 150px;">
+                                    <option value="available" {% if i.status == "available" %}selected{% endif %}>Available</option>
+                                    <option value="not available" {% if i.status == "not available" %}selected{% endif %}>Not Available</option>
+                                    <option value="completed" {% if i.status == "completed" %}selected{% endif %}>Completed</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if i.status == 'available' %}
+                        <button class="btn btn-sm btn-outline-primary" 
+                                onclick="showDrowsinessModal('{{ i.id }}')"
+                                data-bs-toggle="tooltip" title="View Driver Monitoring">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        {% else %}
+                        <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="14" class="text-center">No bookings found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Drowsiness Monitoring Modal -->
+<div class="modal fade" id="drowsinessModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Driver Safety Monitoring</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-7">
+                        <div style="max-width: 500px; margin: 0 auto;">
+                            <div class="ratio ratio-16x9 border rounded overflow-hidden">
+                                <img id="drowsinessFeed" src="" class="img-fluid" style="object-fit: cover; background-color: #f8f9fa;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white py-2">
+                                <small>Safety Metrics</small>
+                            </div>
+                            <div class="card-body p-3">
+                                <div class="alert alert-info p-2 mb-2">
+                                    <small class="d-flex justify-content-between">
+                                        <strong>Eye Aspect Ratio:</strong> 
+                                        <span id="modalEarValue" class="fw-bold">0.00</span>
+                                    </small>
+                                </div>
+                                <div class="alert alert-warning p-2 mb-2">
+                                    <small class="d-flex justify-content-between">
+                                        <strong>Yawn Detection:</strong> 
+                                        <span id="modalYawnValue" class="fw-bold">0.00</span>
+                                    </small>
+                                </div>
+                                <div class="alert alert-danger p-2 mb-0" id="modalAlertBox" style="display: none;">
+                                    <small class="d-flex align-items-center">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <span>Drowsiness detected!</span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+});
+
+let metricInterval;
+function showDrowsinessModal(bookingId) {
+    const modal = new bootstrap.Modal(document.getElementById('drowsinessModal'));
+    const videoFeed = document.getElementById('drowsinessFeed');
+    
+    // Clear any existing interval
+    if (metricInterval) clearInterval(metricInterval);
+    
+    // Start video feed with cache busting
+    videoFeed.src = "{% url 'drowsiness_feed' %}?t=" + new Date().getTime();
+    
+    // Simulate metric updates (replace with WebSocket in production)
+    metricInterval = setInterval(() => {
+        document.getElementById('modalEarValue').textContent = 
+            (0.2 + Math.random() * 0.2).toFixed(2);
+        document.getElementById('modalYawnValue').textContent = 
+            (15 + Math.random() * 15).toFixed(2);
+        
+        if(Math.random() > 0.9) {
+            const alertBox = document.getElementById('modalAlertBox');
+            alertBox.style.display = 'block';
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 3000);
+        }
+    }, 1000);
+    
+    // Clean up when modal closes
+    document.getElementById('drowsinessModal').addEventListener('hidden.bs.modal', function () {
+        clearInterval(metricInterval);
+        videoFeed.src = "";
+    });
+    
+    // Handle video errors
+    videoFeed.onerror = function() {
+        alert('Could not load video feed. Please check camera permissions.');
+        modal.hide();
+    };
+    
+    modal.show();
+}
+</script>
+
+<style>
+    /* Existing table styles */
+    th:nth-child(12), td:nth-child(12) {
+        width: 220px;
+    }
+    .input-group {
+        flex-wrap: nowrap;
+    }
+    .form-select {
+        min-width: 140px;
+    }
+    .btn-primary {
+        white-space: nowrap;
+    }
+    
+    /* New monitoring column styles */
+    td:nth-child(14) {
+        width: 80px;
+        text-align: center;
+    }
+    
+    /* Modal styles */
+    .modal-body .ratio {
+        background-color: #f8f9fa;
+    }
+    .alert small {
+        font-size: 0.85rem;
+    }
+    
+    /* Better video sizing */
+    #drowsinessFeed {
+        max-height: 400px;
+        width: 100%;
+    }
+</style>
+
+{% endblock %}

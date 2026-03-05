@@ -1,0 +1,49 @@
+{% extends "admin_nav.html" %}
+{% block content %}
+<br><br>
+<div style="text-align: center;">
+    <h2>Booking Status Report</h2>
+</div>
+<br><br>
+<!-- Load Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Fix Stretching Issue: Wrap Canvas in a Container -->
+<div style="max-width: 800px; height: 400px; margin: auto;">
+    <canvas id="bookingChart"></canvas>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById("bookingChart").getContext("2d");
+
+        // Parse labels and data correctly
+        var labels = JSON.parse('{{ labels|escapejs }}');  
+        var data = JSON.parse('{{ data|escapejs }}');  
+
+        var bookingChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Total Bookings",
+                    data: data,
+                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,  // ✅ Keep it responsive
+                maintainAspectRatio: false,  // ✅ Prevent downward stretching
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

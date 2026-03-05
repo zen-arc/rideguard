@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Admin Dashboard</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* General */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfaf5; /* Soft warm beige */
+            margin: 0;
+            color: #5a4d41; /* Warm dark gray */
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #f8f1e9; /* Light warm cream */
+            padding: 20px;
+            border-right: 1px solid #e0d4c9;
+        }
+        .sidebar a {
+            display: block;
+            color: #5a4d41;
+            padding: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .sidebar a:hover {
+            background: #e0d4c9; /* Muted warm hover effect */
+        }
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        /* Content */
+        .content {
+            margin-left: 220px;
+            padding: 30px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #e0d4c9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Cards */
+        .dashboard-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .dashboard-card h5 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #4c3f35;
+        }
+        .dashboard-card p {
+            font-size: 20px;
+            font-weight: bold;
+            color: #5a4d41;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            padding: 15px;
+            margin-top: 30px;
+            color: #8a7d71;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #d5a676; /* Warm muted orange */
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #c1915e;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h4>Dashboard</h4>
+    <a href="{% url 'adminhome' %}"><i class="fas fa-home"></i> Home</a>
+    <a href="{% url 'add_category' %}"><i class="fas fa-add"></i>Add Category</a>
+    <a href="{% url 'driver_Pending' %}"><i class="fas fa-clock"></i> Driver Pending</a>
+    <a href="{% url 'driver_Approved' %}"><i class="fas fa-check"></i> Driver Approval</a>
+    <a href="{% url 'view_vehicle' %}"><i class="fas fa-users"></i> View Vehicle</a>
+    <div class="dropdown">
+        <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-list"></i> Bookings
+        </a>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'booking_status_report' %}">Booking Status Report</a></li>
+            <li><a class="dropdown-item" href="{% url 'top_rated_vehicles_report' %}">Top Rated Vehicles</a></li>
+            <li><a class="dropdown-item" href="{% url 'driver_availability_report' %}">Driver Availability</a></li>
+            <li><a class="dropdown-item" href="{% url 'category_wise_vehicle_report' %}">Category-wise Vehicles</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="content">
+    <div class="navbar">
+        <span>Welcome, Admin</span>
+        <a href="{% url 'logout' %}" class="btn btn-sm btn-primary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+{% block content %}{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+<!-- Footer -->
+<div class="footer">
+    &copy; 2025 Minimal Admin Panel. All Rights Reserved.
+</div>
+
+</body>
+
+</html>

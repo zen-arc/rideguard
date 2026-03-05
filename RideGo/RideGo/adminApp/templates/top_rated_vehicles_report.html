@@ -1,0 +1,48 @@
+{% extends "admin_nav.html" %}
+{% block content %}
+<br><br>
+<h2 style="text-align: center;">Top Rated Vehicles</h2>
+<br><br>
+<!-- Load Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Fix Stretching Issue: Wrap Canvas in a Container -->
+<div style="max-width: 800px; height: 400px; margin: auto;">
+    <canvas id="ratingChart"></canvas>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById("ratingChart").getContext("2d");
+
+        // Fix JSON parsing issue
+        var labels = JSON.parse('{{ labels|escapejs }}');
+        var data = JSON.parse('{{ data|escapejs }}');
+
+        var ratingChart = new Chart(ctx, {
+            type: "bar",  // ✅ Vertical bar chart (default behavior)
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Average Rating",
+                    data: data,
+                    backgroundColor: "rgba(75, 192, 192, 0.6)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,  // ✅ Prevents stretching
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5  // ✅ Ensures rating stays within 1-5
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

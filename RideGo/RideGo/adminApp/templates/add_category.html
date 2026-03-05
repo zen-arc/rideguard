@@ -1,0 +1,88 @@
+{% extends "admin_nav.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add category</button>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Image</th>                
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in cat %}
+            <tr>
+                <td>{{ i.name }}</td>
+                <td><img src="{{ i.image.url }}" alt="Category Image" width="100"></td>                  
+                <td>
+                    <!-- Edit Button to Open Modal -->
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editCategoryModal{{ i.id }}">Edit</button>
+                    
+                    <!-- Delete Button -->
+                    <a href="{% url 'del_category' i.id %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+
+            <!-- Edit Category Modal (One for each category) -->
+            <div class="modal fade" id="editCategoryModal{{ i.id }}" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Category</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="{% url 'edit_category' i.id %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name"  class="form-control" value="{{ i.name }}" required>
+
+                                <label for="image">Image</label>
+                                <input type="file" name="image" id="image" class="form-control">
+
+                                <img src="{{ i.image.url }}" alt="Current Image" class="mt-2" width="100">
+
+                                <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">No Category found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'add_category' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

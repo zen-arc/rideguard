@@ -1,0 +1,38 @@
+{% extends "driver_nav.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Vehicle Reviews</h2>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Vehicle</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                <tr>
+                    <td>{{ review.id }}</td>
+                    <td>{{ review.user.name }}</td>
+                    <td>{{ review.vehicle.name }}</td>  <!-- Changed from product to vehicle -->
+                    <td>{{ review.rating }}⭐/5⭐</td>
+                    <td>{{ review.comment }}</td>
+                    <td>{{ review.created_at|date:"d-m-Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No reviews found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

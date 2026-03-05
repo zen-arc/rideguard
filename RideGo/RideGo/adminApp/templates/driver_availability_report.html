@@ -1,0 +1,41 @@
+{% extends "admin_nav.html" %}
+{% block content %}
+<br><br>
+<div style="text-align: center;">
+    <h2>Driver Availability Report</h2>
+</div>
+<br><br>
+<!-- Load Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Fix Pie Chart Stretching -->
+<div style="max-width: 500px; margin: auto;">
+    <canvas id="driverChart"></canvas>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById("driverChart").getContext("2d");
+
+        // Fix JSON parsing issue
+        var labels = JSON.parse('{{ labels|escapejs }}');
+        var data = JSON.parse('{{ data|escapejs }}');
+
+        var driverChart = new Chart(ctx, {
+            type: "pie",  // ✅ Correct chart type
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: ["#FF5733", "#28A745", "#007BFF", "#FFC107", "#6F42C1"]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    });
+</script>
+
+{% endblock %}

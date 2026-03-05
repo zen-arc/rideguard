@@ -1,0 +1,126 @@
+{% extends 'user_nav.html' %}
+{% load static %}
+{% block content %}
+<br>
+<div class="text-center mx-auto pb-5" style="max-width: 800px;">
+    <h1 class="display-5 text-capitalize mb-3">Write a Review for <br> <span class="text-primary">{{ vehicle.name }}</span></h1>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    {% if show_alert %}
+        Swal.fire({
+            icon: '{{ sweetalert.icon }}',
+            title: '{{ sweetalert.title }}',
+            text: '{{ sweetalert.text }}',
+            confirmButtonText: 'OK'
+        });
+    {% endif %}
+</script>
+    
+<div class="card shadow-lg p-4 mt-4" style="max-width: 600px; margin: auto; border-radius: 12px; background: #fff;">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Star Rating System -->
+        <div class="mb-4 text-center">
+            <label class="form-label fw-bold">Rate this Product:</label>
+            <div class="star-rating">
+                <input type="radio" name="rating" id="star5" value="5">
+                <label for="star5" onclick="setRating(5)">&#9733;</label>
+                <input type="radio" name="rating" id="star4" value="4">
+                <label for="star4" onclick="setRating(4)">&#9733;</label>
+                <input type="radio" name="rating" id="star3" value="3">
+                <label for="star3" onclick="setRating(3)">&#9733;</label>
+                <input type="radio" name="rating" id="star2" value="2">
+                <label for="star2" onclick="setRating(2)">&#9733;</label>
+                <input type="radio" name="rating" id="star1" value="1">
+                <label for="star1" onclick="setRating(1)">&#9733;</label>
+            </div>
+        </div>
+
+        <!-- Comment Section -->
+        <div class="mb-4">
+            <label for="comment" class="form-label fw-bold">Your Review:</label>
+            <textarea name="comment" class="form-control review-textarea" rows="4" placeholder="Write your review..." required></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-modern">Submit Review</button>
+        </div>
+    </form>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    /* Star Rating Styling */
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        font-size: 2rem;
+        gap: 8px;
+    }
+    .star-rating input {
+        display: none;
+    }
+    .star-rating label {
+        cursor: pointer;
+        color: #ccc;
+        transition: color 0.3s, transform 0.2s;
+    }
+    .star-rating label:hover,
+    .star-rating label:hover ~ label,
+    .star-rating input:checked ~ label {
+        color: #ffcc00;
+        transform: scale(1.2);
+    }
+
+    /* Modern Textarea */
+    .review-textarea {
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease-in-out;
+        background: #f9f9f9;
+    }
+    .review-textarea:focus {
+        border-color: #007bff;
+        background: #fff;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+    }
+
+    /* Modern Button */
+    .btn-modern {
+        background: linear-gradient(135deg, #28a745, #218838);
+        border: none;
+        color: #fff;
+        padding: 12px 24px;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+    .btn-modern:hover {
+        background: linear-gradient(135deg, #218838, #1e7e34);
+        color: #fff;
+
+    }
+</style>
+
+<!-- JavaScript to Handle Star Selection -->
+<script>
+    function setRating(rating) {
+        let labels = document.querySelectorAll('.star-rating label');
+        labels.forEach(label => label.classList.remove('active'));
+
+        for (let i = 1; i <= rating; i++) {
+            document.querySelector(`label[for=star${i}]`).classList.add('active');
+        }
+        document.getElementById(`star${rating}`).checked = true;
+    }
+</script>
+<br><br><br>
+{% endblock %}

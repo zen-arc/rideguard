@@ -1,0 +1,56 @@
+{% extends 'user_nav.html' %}
+{% load static %}
+{% block content %}
+<br>
+    <!-- Display messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow p-4">
+        <h2 class="text-center text-primary mb-4">Edit Profile</h2>
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Name -->
+            <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" name="name" id="name" value="{{ userreg.name }}" required>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="text" class="form-control" name="phone" id="phone" value="{{ userreg.phone_number }}" >
+            </div>
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" class="form-control" name="country" id="country" value="{{ userreg.country }}" >
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="email" value="{{ userlog.email }}" readonly>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="password" value="{{ userlog.password }}" required>
+            </div>
+
+            <!-- Submit -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-4">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+<br><br><br>
+{% endblock %}

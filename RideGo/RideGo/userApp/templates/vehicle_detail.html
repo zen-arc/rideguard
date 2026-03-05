@@ -1,0 +1,157 @@
+{% extends "user_nav.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Product Details Section -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Vehicle Image -->
+        <div class="col-lg-6">
+            <div class="product-image">
+                <img src="{{ vehicle.image.url }}" class="img-fluid rounded shadow-lg" alt="{{ vehicle.name }}">
+            </div>
+        </div>
+
+        <!-- Vehicle Details -->
+        <div class="col-lg-6">
+            <h1 class="display-5 text-dark">{{ vehicle.name }}</h1>
+            <h4 class="text-muted">Category: {{ vehicle.category }}</h4>
+
+            <span class="badge bg-success fs-6 mb-3">₹{{ vehicle.price_per_km }}/km</span>
+
+            <ul class="list-group list-group-flush my-4">
+                <li class="list-group-item"><i class="fa fa-id-card text-primary"></i> Registration Number: {{ vehicle.regno }}</li>
+                <li class="list-group-item"><i class="fa fa-gas-pump text-primary"></i> Fuel Type: {{ vehicle.fuel_type }}</li>
+                <li class="list-group-item"><i class="fa fa-car text-primary"></i> {{ vehicle.model }}</li>
+                <li class="list-group-item"><i class="fa fa-users text-primary"></i> Seats: {{ vehicle.no_of_seats }}</li>
+                <li class="list-group-item"><i class="fa fa-user text-primary"></i> Driver: {{ vehicle.driverid.name }}</li>
+            </ul>
+
+            <p class="text-dark">{{ vehicle.description }}</p>
+
+            <a href="{% url 'trip_booking' vehicle.id %}" class="btn btn-primary rounded-pill py-2 px-4">Book Trip</a>
+        </div>
+    </div>
+</div>
+<!-- Reviews Section -->
+<div class="container mt-5">
+    <h3 class="review-title">Customer Reviews</h3>
+    <hr>
+    {% if reviews %}
+        <div class="review-container">
+            {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-rating">
+                        {% for i in "12345" %}
+                        {% if forloop.counter <= review.rating %}
+                            <i class="fas fa-star" style="color: #FFD700;"></i>
+                        {% else %}
+                            <i class="far fa-star" style="color: #FFD700;"></i>
+                        {% endif %}
+                        {% endfor %}                    
+                    </div>
+                    <div class="review-header">
+                        <div class="review-user">
+                            <i class="fas fa-user-circle user-icon"></i>
+                            <span class="review-username">{{ review.user.name }}</span>
+                        </div>
+                        <small class="review-date">{{ review.created_at|date:"M d, Y" }}</small>
+                    </div>
+                    <p class="review-content">{{ review.comment }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-reviews">No reviews yet. Be the first to review this product!</p>
+    {% endif %}
+</div>
+<!-- Styling -->
+<style>
+    .product-image img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .list-group-item {
+        font-size: 16px;
+        border: none;
+        padding-left: 0;
+    }
+
+    .badge {
+        font-size: 18px;
+        padding: 10px 15px;
+    }
+
+    /* Reviews Styling */
+    .review-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #222;
+        margin-bottom: 15px;
+    }
+
+    .review-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: flex-start;
+    }
+
+    .review-card {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        width: 100%;
+        max-width: 637px;
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .review-user {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .user-icon {
+        font-size: 1.5rem;
+        color: #007bff;
+    }
+
+    .review-username {
+        font-weight: bold;
+    }
+
+    .review-date {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .review-content {
+        margin-bottom: 5px;
+        font-size: 1rem;
+        color: #444;
+    }
+
+    .review-rating {
+        font-size: 1.2rem;
+        color: #e44d26;
+    }
+
+    @media (max-width: 768px) {
+        .product-image img {
+            height: auto;
+        }
+    }
+</style>
+<br>
+{% endblock %}

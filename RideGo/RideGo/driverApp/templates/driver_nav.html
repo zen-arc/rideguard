@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Panel</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #343a40;
+            padding-top: 20px;
+            color: white;
+        }
+
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+            color: white;
+        }
+
+        .sidebar a:hover {
+            background: #495057;
+        }
+
+        /* Content */
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: #212529;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Logout button */
+        .logout-btn {
+            background: #dc3545;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #bb2d3b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4 class="text-center">Driver Panel</h4>
+        <a href="{% url 'driver_home' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="{% url 'edit_driver' %}"><i class="fas fa-user-edit"></i> Edit Profile</a>
+        <a href="{% url 'add_vehicle' %}"><i class="fas fa-car"></i> Add Vehicle</a>
+        <a href="{% url 'booking_list' %}"><i class="fas fa-edit"></i> Manage Bookings</a>
+        <a href="{% url 'reviews_list' %}"><i class="fas fa-star"></i> View Reviews</a>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+        <div class="header">
+            <h3>Dashboard</h3>
+            <a href="{% url 'logout' %}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a> 
+        </div>
+        <!-- Messages Container -->
+<div id="message-container" class="message-container">
+    {% for message in messages %}
+    <div class="message message-{{ message.tags }}">
+        <span>{{ message }}</span>
+        <button class="close-message">&times;</button>
+    </div>
+    {% endfor %}
+ </div>
+ <!-- CSS Styles -->
+ <style>
+    .message-container {
+       position: fixed;
+       top: 20px; /* Moves messages to the top */
+       left: 50%;
+       transform: translateX(-50%);
+       z-index: 1000;
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+   }
+   
+   .message {
+       background-color: #333;
+       color: white;
+       padding: 12px 20px;
+       margin-bottom: 10px;
+       border-radius: 5px;
+       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       min-width: 250px;
+       max-width: 400px;
+       text-align: center;
+       opacity: 0.9;
+       transition: opacity 0.5s ease-in-out;
+   }
+   
+   .message.success { background-color: #28a745; }
+   .message.error { background-color: #dc3545; }
+   .message.warning { background-color: #ffc107; color: #333; }
+   .message.info { background-color: #17a2b8; }
+   
+   .message .close-message {
+       background: none;
+       border: none;
+       color: white;
+       font-size: 16px;
+       cursor: pointer;
+       margin-left: 10px;
+   }
+   
+   .message:hover { opacity: 1; }
+   
+ </style>
+ 
+ <!-- JavaScript -->
+ <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const messages = document.querySelectorAll(".message");
+        messages.forEach(msg => {
+            setTimeout(() => {
+                msg.style.opacity = "0";
+                setTimeout(() => msg.remove(), 500);
+            }, 3000);
+ 
+            msg.querySelector(".close-message").addEventListener("click", function () {
+                msg.style.opacity = "0";
+                setTimeout(() => msg.remove(), 500);
+            });
+        });
+    });
+ </script>
+        <div class="container mt-4">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

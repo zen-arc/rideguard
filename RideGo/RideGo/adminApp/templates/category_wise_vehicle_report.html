@@ -1,0 +1,39 @@
+{% extends "admin_nav.html" %}
+{% block content %}
+<br><br>
+<h2 style="text-align: center;">Vehicle Distribution by Category</h2>
+<br><br>
+<!-- Load Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Fix Doughnut Chart Size -->
+<div style="max-width: 500px; margin: auto;">
+    <canvas id="vehicleChart"></canvas>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById("vehicleChart").getContext("2d");
+
+        // Fix JSON parsing issue
+        var labels = JSON.parse('{{ labels|escapejs }}');
+        var data = JSON.parse('{{ data|escapejs }}');
+
+        var vehicleChart = new Chart(ctx, {
+            type: "doughnut",  // ✅ Correct chart type
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: ["#007BFF", "#FFC107", "#DC3545", "#28A745", "#6F42C1"]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    });
+</script>
+
+{% endblock %}

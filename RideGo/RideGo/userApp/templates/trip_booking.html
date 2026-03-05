@@ -1,0 +1,228 @@
+{% extends "user_nav.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Include Leaflet.js -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<div class="container py-5">
+    <h2 class="text-center mb-4 fw-bold text-primary">Book Your Trip</h2>
+
+    <!-- Display messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" class="shadow-lg p-4 rounded bg-light">
+        {% csrf_token %}
+
+        <!-- User Information -->
+        <div class="card p-3 mb-3 shadow-sm">
+            <h4 class="text-primary">User Information</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Full Name:</strong> {{ user.name }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Email:</strong> {{ user.login.email }}</p>
+                </div>
+                <div class="col-md-12">
+                    <p><strong>Phone Number:</strong> {{ user.phone_number }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Information -->
+        {% if vehicle %}
+        <div class="card p-3 mb-3 shadow-sm">
+            <h4 class="text-primary">Vehicle & Driver Information</h4>
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img src="{{ vehicle.image.url }}" class="rounded img-fluid my-2" style="max-height: 150px; object-fit: cover;">
+                </div>
+                <div class="col-md-8">
+                    <p><strong>Vehicle Name:</strong> {{ vehicle.name }}</p>
+                    <p><strong>Fuel Type:</strong> {{ vehicle.fuel_type }}</p>
+                    <p><strong>Model:</strong> {{ vehicle.model }}</p>
+                    <p><strong>Registration No:</strong> {{ vehicle.regno }}</p>
+                    <p><strong>No. of Seats:</strong> {{ vehicle.no_of_seats }}</p>
+                    <span class="badge bg-success fs-6">₹{{ vehicle.price_per_km }}/km</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if vehicle.driverid %}
+        <!-- Driver Information -->
+        <div class="card p-3 mt-3 shadow-sm">
+            <h5 class="text-primary">Driver Details</h5>
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img src="{{ vehicle.driverid.image.url }}" class="img-fluid" style="max-height: 100px; object-fit: cover;">
+                </div>
+                <div class="col-md-8">
+                    <p><strong>Name:</strong> {{ vehicle.driverid.name }}</p>
+                    <p><strong>Country:</strong> {{ vehicle.driverid.country }}</p>
+                    <p><strong>Phone:</strong> {{ vehicle.driverid.phone_number }}</p>
+                    <p><strong>Email:</strong> {{ vehicle.driverid.loginid.email }}</p>
+                    <p><i class="fa fa-file-alt text-primary me-2"></i> <a href="{{ vehicle.driverid.pcc.url }}" target="_blank" class="text-success">PCC Document</a></p>
+                    <p><i class="fa fa-id-badge text-primary me-2"></i> <a href="{{ vehicle.driverid.aadhar.url }}" target="_blank" class="text-success">Aadhar Card</a></p>
+                    <p><i class="fa fa-id-card text-primary me-2"></i> <a href="{{ vehicle.driverid.license.url }}" target="_blank" class="text-success">Driving License</a></p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <br>
+
+        <!-- Trip Details -->
+        <div class="card p-3 mb-3 shadow-sm">
+            <h4 class="text-primary">Trip Details</h4>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">From Location</label>
+                    <input type="text" id="from_location" name="from_location" class="form-control" placeholder="Enter starting point" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">To Location</label>
+                    <input type="text" id="to_location" name="to_location" class="form-control" placeholder="Enter destination" required>
+                </div>
+            </div>
+
+            <!-- Map for Location Picker -->
+            <div id="map" style="height: 300px; width: 100%; margin-top: 20px;"></div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Travel Date</label>
+                    <input type="date" name="travel_date" class="form-control" id="travel_date" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Travel Time</label>
+                    <input type="time" name="travel_time" class="form-control" id="travel_time" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-primary w-50 shadow-sm">Book Now</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-control, .form-check-input {
+        border-radius: 8px;
+    }
+
+    button {
+        border-radius: 50px;
+        font-size: 18px;
+        padding: 10px;
+    }
+
+    img {
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge {
+        font-size: 18px;
+        padding: 8px 12px;
+    }
+</style>
+
+<script>
+    // Ensure users cannot select past dates
+    document.addEventListener("DOMContentLoaded", function() {
+        let today = new Date().toISOString().split('T')[0];
+        document.getElementById("travel_date").setAttribute("min", today);
+    });
+
+    // Initialize the map
+    const map = L.map('map').setView([10.8505, 76.2711], 8); // Kerala coordinates and zoom level
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add markers for "From" and "To" locations
+    let fromMarker = null;
+    let toMarker = null;
+
+    // Function to add a marker
+    function addMarker(latLng, type) {
+        if (type === 'from') {
+            if (fromMarker) fromMarker.remove();
+            fromMarker = L.marker(latLng, { draggable: true }).addTo(map);
+            fromMarker.on('dragend', function (event) {
+                updateLocationInput('from_location', event.target.getLatLng());
+            });
+            updateLocationInput('from_location', latLng);
+        } else if (type === 'to') {
+            if (toMarker) toMarker.remove();
+            toMarker = L.marker(latLng, { draggable: true }).addTo(map);
+            toMarker.on('dragend', function (event) {
+                updateLocationInput('to_location', event.target.getLatLng());
+            });
+            updateLocationInput('to_location', latLng);
+        }
+    }
+
+    // Function to update the input fields
+    function updateLocationInput(inputId, latLng) {
+        document.getElementById(inputId).value = `${latLng.lat}, ${latLng.lng}`;
+    }
+
+    // Add click event to the map
+    map.on('click', function (event) {
+        const type = prompt("Is this the 'From' or 'To' location? (Enter 'from' or 'to')");
+        if (type === 'from' || type === 'to') {
+            addMarker(event.latlng, type);
+        } else {
+            alert("Invalid input. Please enter 'from' or 'to'.");
+        }
+    });
+
+    // Autocomplete for "From" and "To" inputs
+    async function fetchAutocompleteSuggestions(query) {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json`);
+        const data = await response.json();
+        return data;
+    }
+
+    function setupAutocomplete(inputId, type) {
+        const input = document.getElementById(inputId);
+        input.addEventListener('input', async function (event) {
+            const query = event.target.value;
+            if (query.length > 2) { // Only fetch suggestions after 3 characters
+                const suggestions = await fetchAutocompleteSuggestions(query);
+                console.log(suggestions); // Display suggestions in the console or a dropdown
+                // You can create a dropdown UI to show suggestions and handle selection
+            }
+        });
+    }
+
+    // Set up autocomplete for "From" and "To" inputs
+    setupAutocomplete('from_location', 'from');
+    setupAutocomplete('to_location', 'to');
+</script>
+
+{% endblock %}

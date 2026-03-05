@@ -1,0 +1,131 @@
+{% extends "driver_nav.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-container {
+        width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 30px 40px;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    label {
+        font-weight: bold;
+        color: #555;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="file"] {
+        width: 100%;
+        padding: 8px 10px;
+        margin: 6px 0 16px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        background-color: #0d6efd;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #084298;
+    }
+
+    .message {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .message.error {
+        color: red;
+    }
+
+    .message.success {
+        color: green;
+    }
+
+    small {
+        font-size: 0.9em;
+        color: #333;
+    }
+</style>
+
+<div class="form-container">
+    <h2>Edit Driver Profile</h2>
+
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label>Name:</label>
+        <input type="text" name="name" value="{{ driver.name }}">
+
+        <label>Email:</label>
+        <input type="email" name="email" value="{{ driver.loginid.email }}">
+
+        <label>Password:</label>
+        <input type="password" name="password" value="{{ driver.loginid.password }}">
+
+        <label>Country:</label>
+        <input type="text" name="country" value="{{ driver.country }}">
+
+        <label>Phone Country Code (e.g. +91):</label>
+        <input type="text" name="phone_country_code" value="{{ driver.phone_country_code }}">
+
+        <label>Phone Number:</label>
+        <input type="text" name="phone" value="{{ driver.phone_number }}">
+
+        <label>Upload Image:</label>
+        <input type="file" name="image">
+        {% if driver.image %}
+            <small>Current: <a href="{{ driver.image.url }}" target="_blank">View</a></small>
+        {% endif %}
+<br>
+        <label>Upload PCC:</label>
+        <input type="file" name="pcc">
+        {% if driver.pcc %}
+            <small>Current: <a href="{{ driver.pcc.url }}" target="_blank">View</a></small>
+        {% endif %}
+        <br>
+        <label>Upload Aadhar:</label>
+        <input type="file" name="aadhar">
+        {% if driver.aadhar %}
+            <small>Current: <a href="{{ driver.aadhar.url }}" target="_blank">View</a></small>
+        {% endif %}
+        <br>
+        <label>Upload License (Optional):</label>
+        <input type="file" name="license">
+        {% if driver.license %}
+            <small>Current: <a href="{{ driver.license.url }}" target="_blank">View</a></small>
+        {% endif %}
+
+        <button type="submit">Update Profile</button>
+    </form>
+</div>
+{% endblock %}

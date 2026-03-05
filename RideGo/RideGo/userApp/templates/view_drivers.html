@@ -1,0 +1,36 @@
+{% extends "user_nav.html" %}
+{% load static %}
+{% block content %}
+
+        <!-- Team Start -->
+        <div class="container-fluid team pb-5">
+            <div class="container pb-5">
+                <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+                    <h1 class="display-5 text-capitalize mb-3">Our<span class="text-primary"> Drivers</span> </h1>
+                    <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut amet nemo expedita asperiores commodi accusantium at cum harum, excepturi, quia tempora cupiditate! Adipisci facilis modi quisquam quia distinctio,
+                    </p>
+                </div>
+                <div class="row g-4">
+                    {% for d in drivers %}
+                    <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="team-item p-4 pt-0">
+                            <div class="team-img">
+                                <img src="{{d.image.url}}" class="img-fluid rounded w-100" style="height: 350px; object-fit: cover;" alt="Image">
+                            </div>
+                            <div class="team-content pt-4">
+                                <h4>{{d.name}}</h4>
+                                <div class="text-center mt-3">
+                                    <a href="{% url 'driver_detail' d.id %}" class="btn btn-outline-primary rounded-pill d-flex justify-content-center py-3">View Profile</a>
+                                </div> <br>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- Team End -->
+
+{% endblock  %}
